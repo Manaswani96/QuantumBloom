@@ -33,15 +33,15 @@
 
 ---
 
-## 🌸 Quantum Bloom Studio Demo
+## 🖥️ UI Preview
 
-![Wavefunction UI](ui-preview/Screenshot 2025-06-14 094547.png )
+Here's a look at the Quantum Bloom Studio interface:
 
-See the interactive quantum visualizations below 👇  
-![Simulation Demo](ui-preview/Screenshot 2025-06-14 094814.png)
-)
+### 🌌 Wavefunction Controls
+![Wavefunction Controls](ui-preview/Screenshot%202025-06-14%20094547.png)
 
-> 🎥 **GIF Demo Coming Soon!**
+### 📊 Real-time Output Graphs
+![Graph Preview](ui-preview/Screenshot%202025-06-14%20094814.png)
 
 ---
 
