@@ -56,7 +56,7 @@ Here's a look at the Quantum Bloom Studio interface:
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/QuantumBloomStudio.git
+git clone https://github.com/Manaswani96/QuantumBloom.git
 cd QuantumBloomStudio
 ```
 
