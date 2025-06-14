@@ -1,52 +1,49 @@
 # Quantum Bloom Studio
 
-[![Version](https://img.shields.io/badge/version-1.0.0-6a0dad)](https://github.com/your-username/QuantumBloomStudio)
-[![Built with](https://img.shields.io/badge/built%20with-JavaFX-ff69b4)](https://openjfx.io/)
-[![Status](https://img.shields.io/badge/status-active-228b22)]()
-[![License](https://img.shields.io/badge/license-MIT-blue)](./LICENSE)
-[![Platform](https://img.shields.io/badge/platform-Windows%2011-blueviolet)]()
+![Version](https://img.shields.io/badge/version-1.0.0-6a0dad?style=for-the-badge)
+![JavaFX](https://img.shields.io/badge/built%20with-JavaFX-ff69b4?style=for-the-badge)
+![Status](https://img.shields.io/badge/status-active-228b22?style=for-the-badge)
+![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
+![Platform](https://img.shields.io/badge/platform-Windows%2011-blueviolet?style=for-the-badge)
 
-> **Quantum Bloom Studio** is a modern JavaFX application designed for the interactive visualization of quantum wavefunctions and core concepts in quantum mechanics. Optimized for clarity, performance, and a dark theme aesthetic.
-
----
-
-## Features
-
-- Real-time wavefunction rendering (real, imaginary, probability)
-- System selector: infinite potential well, harmonic oscillator, and superposition states
-- Dynamic parameter controls: energy level `n`, box length `L`, and superposition weights
-- Animated time evolution with phase and amplitude tracking
-- Modular plots: expectation values, phase space, energy levels
-- Dark-themed, distraction-free UI with gradient accents
-- Save/load system state support via `.properties` file
-- Prepared for future extension (e.g., quantum tunneling, scattering)
+> **Quantum Bloom Studio** is a sleek, interactive JavaFX application for simulating and visualizing quantum mechanical systems. Designed with precision and style, it brings complex quantum concepts to life.
 
 ---
 
-## Screenshots
+## ✨ Features
 
-| Main Visualization Panel | Control + Animation Panel |
-|--------------------------|----------------------------|
+- Interactive simulation of wavefunctions (real, imaginary, and probability densities)
+- Systems included: Infinite Potential Well, Harmonic Oscillator, Superposition States
+- Real-time control of parameters: Energy level `n`, box length `L`, weights
+- Animated time evolution with dynamic phase visualization
+- Gradient dark-themed UI for a modern physics lab feel
+- Save/load configuration via `.properties` file
+- Modular plot structure: phase space, energy eigenstates, expectation values
+
+---
+
+## 📷 Screenshots
+
+| Main Visualization Panel | Controls + Settings |
+|--------------------------|---------------------|
 | ![](./images/screenshot1-dark.png) | ![](./images/screenshot2-dark.png) |
 
-> More visuals and demos will be added in future releases.
+---
+
+## 🕹️ Demo
+
+Demo GIF of the animated wavefunction is under development and will be available in the next release.
 
 ---
 
-## Demo
-
-A full `.gif` demo of live wave evolution is in progress and will be uploaded here shortly.
-
----
-
-## Installation
+## 📚 Installation
 
 ### Prerequisites
 
-- Java 17 or later
+- Java 17+
 - JavaFX SDK 17+
-- Git (for cloning)
-- Any IDE or text editor (VS Code, IntelliJ, etc.)
+- Git
+- Any Java IDE (VS Code, IntelliJ, etc.)
 
 ### Clone the Repository
 
@@ -54,3 +51,59 @@ A full `.gif` demo of live wave evolution is in progress and will be uploaded he
 git clone https://github.com/your-username/QuantumBloomStudio.git
 cd QuantumBloomStudio
 ```
+
+### Compile and Run
+
+Update JavaFX SDK path based on your machine:
+
+```bat
+:: compiler.bat
+javac --module-path "C:\javafx-sdk-17\lib" --add-modules javafx.controls,javafx.fxml QuantumBloomStudio.java
+```
+
+```bat
+:: run.bat
+java --module-path "C:\javafx-sdk-17\lib" --add-modules javafx.controls,javafx.fxml QuantumBloomStudio
+```
+
+---
+
+## 🔄 Project Structure
+
+```
+QuantumBloomStudio/
+├── QuantumBloomStudio.java
+├── compiler.bat
+├── run.bat
+├── images/
+│   ├── screenshot1-dark.png
+│   └── screenshot2-dark.png
+├── LICENSE
+└── README.md
+```
+
+---
+
+## 👁️ Roadmap
+
+- [ ] Add quantum tunneling visualizations
+- [ ] Export wave animations (GIF/MP4)
+- [ ] Cross-platform support (Mac/Linux)
+- [ ] Toggleable light/dark mode
+- [ ] Plugin-based simulation extension
+
+---
+
+## 📅 License
+
+Licensed under the [MIT License](./LICENSE).
+
+---
+
+## 💬 Contact
+
+**Author:** Manaswani (Mahi)  
+**GitHub:** [@your-username](https://github.com/your-username)  
+**Email:** your.email@example.com
+
+_Quantum Bloom Studio is designed to be a modern gateway to quantum intuition._
