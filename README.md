@@ -35,8 +35,8 @@
 
 ## 📸 Screenshots
 
-![Screenshot 1](screenshots/screenshot_dark1.png)
-![Screenshot 2](screenshots/screenshot_dark2.png)
+![Screenshot 1](ui-preview/Screenshot 2025-06-14 094547.png)
+![Screenshot 2](ui-preview/Screenshot 2025-06-14 094814.png)
 
 > 🎥 **GIF Demo Coming Soon!**
 
