@@ -16,9 +16,9 @@
 
 ---
 
-## 🖤 QuantumBloomStudio: Dark Themed Visualizer
+##  QuantumBloomStudio
 
-> QuantumBloomStudio is an interactive application built with JavaFX, crafted to make the beauty of quantum mechanics tangible and explorable through animated wavefunctions, rich visual effects, and modern dark UI.
+> QuantumBloomStudio is an interactive application built with JavaFX, crafted to make the beauty of quantum mechanics tangible and explorable through animated wavefunctions, rich visual effects, and modern UI.
 
 ---
 
@@ -83,3 +83,35 @@
 ```bash
 git clone https://github.com/your-username/QuantumBloomStudio.git
 cd QuantumBloomStudio
+```
+
+### 2. Compilation
+Edit the JavaFX SDK path as per your local setup:
+```bash
+:: compiler.bat
+javac --module-path "C:\javafx-sdk-17\lib" --add-modules javafx.controls,javafx.fxml QuantumBloomStudio.java
+```
+
+### 3. Execution
+```bash
+:: run.bat
+java --module-path "C:\javafx-sdk-17\lib" --add-modules javafx.controls,javafx.fxml QuantumBloomStudio
+```
+### Project Structure
+```
+QuantumBloomStudio/
+├── QuantumBloomStudio.java
+├── compiler.bat
+├── run.bat
+└── README.md
+```
+### License
+This project is licensed under the MIT License. Feel free to use, modify, and distribute it with credit.
+
+### Author - Mahi.K 
+
+### Collaborators:
+
+Quantum Bloom Studio is designed to blend aesthetics with rigorous simulation. Ideal for physics enthusiasts, educators, and students looking for elegant visual learning tools.
+
+
