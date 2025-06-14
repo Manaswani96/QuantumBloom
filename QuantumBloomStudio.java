@@ -6,7 +6,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -17,6 +16,9 @@ import javafx.stage.Stage;
 import javafx.animation.AnimationTimer;
 import javafx.animation.FadeTransition;
 import javafx.util.Duration;
+import javafx.stage.FileChooser;
+import java.io.*;
+import java.util.Properties;
 
 public class QuantumBloomStudio extends Application {
 
@@ -24,7 +26,7 @@ public class QuantumBloomStudio extends Application {
     private GraphicsContext mainGc, probGc, energyGc, momentumGc, phaseGc, expectationGc, heatmapGc;
     private TextArea info, knowledgePanel, projectInfo;
     private Slider nSlider, lengthSlider, weightSlider;
-    private Button playPauseButton, learnMoreButton, aboutButton;
+    private Button playPauseButton, learnMoreButton, aboutButton, saveButton, loadButton;
     private ComboBox<String> systemComboBox;
     private CheckBox gridToggle;
     private boolean isAnimating = false, showGrid = false;
@@ -39,6 +41,13 @@ public class QuantumBloomStudio extends Application {
     private final double omega = 1.0;
     private String currentSystem = "Particle in a Box";
     private double[] superpositionWeights = {1.0 / Math.sqrt(2), 1.0 / Math.sqrt(2)};
+
+    // Interactive features
+    private double zoomFactor = 1.0;
+    private double panX = 0, panY = 0;
+    private double markerX = 0;
+    private boolean isDraggingMarker = false;
+    private Label wavefunctionLabel;
 
     @Override
     public void start(Stage primaryStage) {
@@ -130,6 +139,16 @@ public class QuantumBloomStudio extends Application {
         aboutButton.setTooltip(new Tooltip("Learn about Quantum Bloom Studio"));
         aboutButton.setOnAction(e -> displayProjectInfo());
 
+        saveButton = new Button("Save State 💾");
+        styleButton(saveButton);
+        saveButton.setTooltip(new Tooltip("Save current quantum state"));
+        saveButton.setOnAction(e -> saveQuantumState(primaryStage));
+
+        loadButton = new Button("Load State 📂");
+        styleButton(loadButton);
+        loadButton.setTooltip(new Tooltip("Load a saved quantum state"));
+        loadButton.setOnAction(e -> loadQuantumState(primaryStage));
+
         Button resetButton = new Button("Reset 🌟");
         styleButton(resetButton);
         resetButton.setTooltip(new Tooltip("Reset all parameters"));
@@ -138,12 +157,17 @@ public class QuantumBloomStudio extends Application {
             nSlider.setValue(1);
             lengthSlider.setValue(10);
             weightSlider.setValue(0.5);
+            zoomFactor = 1.0;
+            panX = 0;
+            panY = 0;
+            markerX = 0;
             if (isAnimating) toggleAnimation();
             time = 0;
+            redrawAll();
             info.appendText("\n🧹 Reset all parameters");
         });
 
-        sidebar.getChildren().addAll(title, systemComboBox, nLabel, nSlider, lengthLabel, lengthSlider, weightLabel, weightSlider, playPauseButton, gridToggle, learnMoreButton, aboutButton, resetButton);
+        sidebar.getChildren().addAll(title, systemComboBox, nLabel, nSlider, lengthLabel, lengthSlider, weightLabel, weightSlider, playPauseButton, gridToggle, learnMoreButton, aboutButton, saveButton, loadButton, resetButton);
 
         // Main Canvas (Wavefunction)
         mainCanvas = new Canvas(800, 300);
@@ -151,18 +175,58 @@ public class QuantumBloomStudio extends Application {
         StackPane mainCanvasPane = new StackPane(mainCanvas);
         mainCanvasPane.setStyle("-fx-background-color: #f0e6ff; -fx-border-color: #b266ff; -fx-border-width: 2; -fx-effect: dropshadow(gaussian, #b266ff, 15, 0.5, 0, 0); -fx-background-radius: 10; -fx-border-radius: 10;");
 
-        // Hover effect on main canvas
-        Label hoverLabel = new Label("");
-        hoverLabel.setStyle("-fx-font-family: 'Verdana'; -fx-text-fill: #66cccc; -fx-background-color: rgba(255, 245, 230, 0.8); -fx-padding: 5; -fx-background-radius: 5;");
-        StackPane.setAlignment(hoverLabel, Pos.TOP_LEFT);
-        mainCanvasPane.getChildren().add(hoverLabel);
-        mainCanvas.setOnMouseMoved(e -> {
-            double x = (e.getX() - 50) * 2 * L / (750 - 50) - L;
-            double psi = computeWavefunctionAtX(x);
-            hoverLabel.setText("x: " + String.format("%.2f", x) + ", ψ: " + String.format("%.2f", psi));
-            hoverLabel.setVisible(true);
+        // Wavefunction value display
+        wavefunctionLabel = new Label("");
+        wavefunctionLabel.setStyle("-fx-font-family: 'Verdana'; -fx-text-fill: #66cccc; -fx-background-color: rgba(255, 245, 230, 0.8); -fx-padding: 5; -fx-background-radius: 5;");
+        StackPane.setAlignment(wavefunctionLabel, Pos.TOP_LEFT);
+        mainCanvasPane.getChildren().add(wavefunctionLabel);
+
+        // Zoom and pan controls
+        mainCanvas.setOnScroll(e -> {
+            double delta = e.getDeltaY() > 0 ? 1.1 : 0.9;
+            zoomFactor *= delta;
+            zoomFactor = Math.max(0.5, Math.min(zoomFactor, 5.0));
+            redrawAll();
+            info.appendText("\n🔎 Zoomed to " + String.format("%.2f", zoomFactor));
         });
-        mainCanvas.setOnMouseExited(e -> hoverLabel.setVisible(false));
+
+        mainCanvas.setOnMousePressed(e -> {
+            if (e.isSecondaryButtonDown()) {
+                panX += e.getX();
+                panY += e.getY();
+            } else if (Math.abs(e.getX() - (50 + (markerX + L) * (750 - 50) / (2 * L))) < 10) {
+                isDraggingMarker = true;
+            }
+        });
+
+        mainCanvas.setOnMouseDragged(e -> {
+            if (e.isSecondaryButtonDown()) {
+                panX = e.getX() - panX;
+                panY = e.getY() - panY;
+                redrawAll();
+                info.appendText("\n📍 Panned to (" + String.format("%.2f", panX) + ", " + String.format("%.2f", panY) + ")");
+            } else if (isDraggingMarker) {
+                markerX = (e.getX() - 50) * 2 * L / (750 - 50) - L;
+                markerX = Math.max(-L, Math.min(markerX, L));
+                redrawAll();
+            }
+        });
+
+        mainCanvas.setOnMouseReleased(e -> {
+            if (e.isSecondaryButtonDown()) {
+                panX = e.getX();
+                panY = e.getY();
+            }
+            isDraggingMarker = false;
+        });
+
+        mainCanvas.setOnMouseMoved(e -> {
+            double x = (e.getX() - 50) * 2 * L / (750 - 50) / zoomFactor - L + panX / zoomFactor;
+            double psi = computeWavefunctionAtX(x);
+            wavefunctionLabel.setText("x: " + String.format("%.2f", x) + ", ψ: " + String.format("%.2f", psi));
+            wavefunctionLabel.setVisible(true);
+        });
+        mainCanvas.setOnMouseExited(e -> wavefunctionLabel.setVisible(false));
 
         // Right Panel (Graphs and Knowledge)
         VBox rightPanel = new VBox(10);
@@ -237,7 +301,7 @@ public class QuantumBloomStudio extends Application {
         Label knowledgeLabel = new Label("📖 Quantum Insights");
         styleLabel(knowledgeLabel);
 
-        knowledgePanel = new TextArea("Click 'Learn More!' to discover quantum facts! 🌟");
+        knowledgePanel = new TextArea("Click 'Learn More!' to see quantum facts in a dialog! 🌟");
         knowledgePanel.setWrapText(true);
         knowledgePanel.setPrefHeight(120);
         knowledgePanel.setEditable(false);
@@ -246,7 +310,7 @@ public class QuantumBloomStudio extends Application {
         Label projectLabel = new Label("ℹ️ About This Project");
         styleLabel(projectLabel);
 
-        projectInfo = new TextArea("Click 'About Project' to learn more! 🌸");
+        projectInfo = new TextArea("Click 'About Project' to see details in a dialog! 🌸");
         projectInfo.setWrapText(true);
         projectInfo.setPrefHeight(100);
         projectInfo.setEditable(false);
@@ -319,6 +383,52 @@ public class QuantumBloomStudio extends Application {
         isAnimating = !isAnimating;
     }
 
+    private void saveQuantumState(Stage stage) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Quantum State");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Properties Files", "*.properties"));
+        File file = fileChooser.showSaveDialog(stage);
+        if (file != null) {
+            Properties props = new Properties();
+            props.setProperty("system", currentSystem);
+            props.setProperty("n", String.valueOf(n));
+            props.setProperty("L", String.valueOf(L));
+            props.setProperty("weight", String.valueOf(weightSlider.getValue()));
+            props.setProperty("time", String.valueOf(time));
+            props.setProperty("showGrid", String.valueOf(showGrid));
+            try (FileOutputStream out = new FileOutputStream(file)) {
+                props.store(out, "Quantum Bloom Studio State");
+                info.appendText("\n💾 Saved state to " + file.getName());
+            } catch (IOException ex) {
+                info.appendText("\n❌ Error saving state: " + ex.getMessage());
+            }
+        }
+    }
+
+    private void loadQuantumState(Stage stage) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Load Quantum State");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Properties Files", "*.properties"));
+        File file = fileChooser.showOpenDialog(stage);
+        if (file != null) {
+            Properties props = new Properties();
+            try (FileInputStream in = new FileInputStream(file)) {
+                props.load(in);
+                systemComboBox.setValue(props.getProperty("system", "Particle in a Box"));
+                nSlider.setValue(Double.parseDouble(props.getProperty("n", "1")));
+                lengthSlider.setValue(Double.parseDouble(props.getProperty("L", "10")));
+                weightSlider.setValue(Double.parseDouble(props.getProperty("weight", "0.5")));
+                time = Double.parseDouble(props.getProperty("time", "0"));
+                showGrid = Boolean.parseBoolean(props.getProperty("showGrid", "false"));
+                gridToggle.setSelected(showGrid);
+                redrawAll();
+                info.appendText("\n📂 Loaded state from " + file.getName());
+            } catch (IOException ex) {
+                info.appendText("\n❌ Error loading state: " + ex.getMessage());
+            }
+        }
+    }
+
     private void displayQuantumKnowledge() {
         String knowledge = "";
         switch (currentSystem) {
@@ -341,7 +451,12 @@ public class QuantumBloomStudio extends Application {
                         "Superposition means the particle is in a mix of states. Adjust the weights to see interference patterns in the probability density! 🌊";
                 break;
         }
-        knowledgePanel.setText(knowledge);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Quantum Insights 📚");
+        alert.setHeaderText("Learn More About " + currentSystem);
+        alert.setContentText(knowledge);
+        alert.getDialogPane().setStyle("-fx-font-family: 'Verdana'; -fx-background-color: #f0e6ff; -fx-text-fill: #b266ff;");
+        alert.showAndWait();
         info.appendText("\n📚 Displayed quantum knowledge!");
     }
 
@@ -349,9 +464,14 @@ public class QuantumBloomStudio extends Application {
         String projectDetails = "🌸 Quantum Bloom Studio 🌸\n" +
                 "Created on: June 13, 2025\n" +
                 "Purpose: A modern, interactive GUI to visualize quantum systems like the Particle in a Box, Quantum Harmonic Oscillator, and Superposition.\n" +
-                "Features:\n- Interactive wavefunction and probability plots\n- Multiple quantum systems\n- Educational insights with equations\n- Sleek, aesthetic design for all users\n" +
+                "Features:\n- Interactive wavefunction and probability plots\n- Multiple quantum systems\n- Educational insights with equations\n- Zoom and pan canvas\n- Save/load quantum states\n- Draggable marker for wavefunction values\n- Sleek, aesthetic design for all users\n" +
                 "Explore quantum mechanics with a touch of magic! ✨";
-        projectInfo.setText(projectDetails);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("About Quantum Bloom Studio 🌸");
+        alert.setHeaderText("Project Information");
+        alert.setContentText(projectDetails);
+        alert.getDialogPane().setStyle("-fx-font-family: 'Verdana'; -fx-background-color: #f0e6ff; -fx-text-fill: #b266ff;");
+        alert.showAndWait();
         info.appendText("\nℹ️ Displayed project info!");
     }
 
@@ -402,6 +522,11 @@ public class QuantumBloomStudio extends Application {
     private void drawMainCanvas() {
         mainGc.setFill(Color.rgb(240, 230, 255));
         mainGc.fillRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
+
+        // Apply zoom and pan
+        mainGc.save();
+        mainGc.translate(panX, panY);
+        mainGc.scale(zoomFactor, zoomFactor);
 
         // Gridlines
         if (showGrid) {
@@ -494,12 +619,24 @@ public class QuantumBloomStudio extends Application {
             mainGc.strokeLine(50 + i * dx, 150 - prob[i], 50 + (i + 1) * dx, 150 - prob[i + 1]);
         }
 
+        // Draw draggable marker
+        double markerCanvasX = 50 + (markerX + L) * (750 - 50) / (2 * L);
+        mainGc.setStroke(Color.RED);
+        mainGc.setLineWidth(2);
+        mainGc.strokeLine(markerCanvasX, 50, markerCanvasX, 250);
+        mainGc.setFill(Color.RED);
+        mainGc.fillOval(markerCanvasX - 5, 145, 10, 10);
+        double psiAtMarker = computeWavefunctionAtX(markerX);
+        mainGc.fillText("ψ: " + String.format("%.2f", psiAtMarker), markerCanvasX + 5, 140);
+
         // Labels
         mainGc.setFill(Color.rgb(178, 102, 255));
         mainGc.setFont(new Font("Verdana", 12));
         mainGc.fillText("Real(ψ)", 50, 30);
         mainGc.fillText("Imag(ψ)", 100, 30);
         mainGc.fillText("Probability", 150, 30);
+
+        mainGc.restore();
     }
 
     private double hermitePolynomial(int n, double x) {
