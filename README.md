@@ -33,10 +33,13 @@
 
 ---
 
-## 📸 Screenshots
+## 🌸 Quantum Bloom Studio Demo
 
-![Screenshot 1](ui-preview/Screenshot 2025-06-14 094547.png)
-![Screenshot 2](ui-preview/Screenshot 2025-06-14 094814.png)
+![Wavefunction UI](ui-preview/Screenshot 2025-06-14 094547.png )
+
+See the interactive quantum visualizations below 👇  
+![Simulation Demo](ui-preview/Screenshot 2025-06-14 094814.png)
+)
 
 > 🎥 **GIF Demo Coming Soon!**
 
