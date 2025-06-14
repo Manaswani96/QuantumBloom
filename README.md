@@ -52,29 +52,78 @@ Here's a look at the Quantum Bloom Studio interface:
 
 ---
 
-## 🚀 Setup & Run
+## 🚀 Setup & Run Instructions (Windows)
+
+### 🔁 Step 1: Clone the Repository
 
 ```bash
-# Clone the repository
 git clone https://github.com/Manaswani96/QuantumBloom.git
 cd QuantumBloomStudio
 ```
 
-### 1. Configure `compiler.bat`
-```bash
-javac --module-path "C:\\javafx-sdk-17\\lib" --add-modules javafx.controls,javafx.fxml QuantumBloomStudio.java
+---
+
+### ⚙️ Step 2: Install Java and JavaFX
+
+Make sure the following are installed:
+
+* ✅ [Java JDK 17 or later](https://www.oracle.com/java/technologies/javase-jdk17-downloads.html)
+* ✅ [JavaFX SDK 17 or later](https://gluonhq.com/products/javafx/)
+
+---
+
+### 🛠️ Step 3: Configure `compiler.bat` and `run.bat`
+
+> These batch files must be edited to match **your system paths**.
+
+#### 📁 Example Folder Structure (Edit as per your system):
+
+```plaintext
+C:\Program Files\Java\jdk-17\
+C:\javafx-sdk-17\
 ```
 
-### 2. Configure `run.bat`
-```bash
-java --module-path "C:\\javafx-sdk-17\\lib" --add-modules javafx.controls,javafx.fxml QuantumBloomStudio
+#### 📄 `compiler.bat`
+
+```bat
+@echo off
+:: Change the paths below to match your system
+set JAVA_HOME="C:\Program Files\Java\jdk-17"
+set JAVAFX_LIB="C:\javafx-sdk-17\lib"
+
+%JAVA_HOME%\bin\javac --module-path %JAVAFX_LIB% --add-modules javafx.controls,javafx.fxml QuantumBloomStudio.java
 ```
 
-### 3. Compile & Run
+#### 📄 `run.bat`
+
+```bat
+@echo off
+:: Make sure the paths match exactly
+set JAVA_HOME="C:\Program Files\Java\jdk-17"
+set JAVAFX_LIB="C:\javafx-sdk-17\lib"
+
+%JAVA_HOME%\bin\java --module-path %JAVAFX_LIB% --add-modules javafx.controls,javafx.fxml QuantumBloomStudio
+```
+
+---
+
+### ▶️ Step 4: Compile and Run
+
+After editing the `.bat` files:
+
 ```bash
 compiler.bat
 run.bat
 ```
+
+This will compile and launch the **Quantum Bloom Studio** GUI.
+
+---
+
+### 🧠 Pro Tips:
+
+* If Java or JavaFX are installed in a different folder, **double-check using `where java`** in Command Prompt.
+* You can also run JavaFX from an IDE like IntelliJ or Eclipse by setting up the VM options and module paths accordingly.
 
 ---
 
