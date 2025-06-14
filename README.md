@@ -17,7 +17,7 @@
 ---
 
 ## 🪐 Overview
-**QuantumBloomStudio is a JavaFX-based educational tool that offers clear, interactive visualizations of quantum systems—bringing wavefunctions, energy levels, and probability densities to life with precision and elegance.**
+QuantumBloomStudio is a JavaFX-based educational tool that offers clear, interactive visualizations of quantum systems—bringing wavefunctions, energy levels, and probability densities to life with precision and elegance.
 ---
 
 ## ✨ Features
