@@ -84,9 +84,9 @@ QuantumBloomStudio/
 ├── QuantumBloomStudio.java
 ├── compiler.bat
 ├── run.bat
-├── screenshots/
-│   ├── screenshot_dark1.png
-│   └── screenshot_dark2.png
+├── ui-preview/
+│   ├── image1
+│   └── image2
 └── README.md
 ```
 
@@ -102,19 +102,12 @@ QuantumBloomStudio/
 ---
 
 ## 👩‍💻 Author
-**[Your Name]** — [GitHub](https://github.com/your-username)
-
-Feel free to fork, star, or submit pull requests!
+**[Mahi.K]** — [GitHub](https://github.com/Manaswani96)
 
 ---
 
 ## 📄 License
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
-
----
-
-## 📬 Contact
-Found a bug or have suggestions? Open an issue or email: [your-email@example.com]
 
 ---
 
