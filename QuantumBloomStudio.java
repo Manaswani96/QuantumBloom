@@ -596,7 +596,7 @@ public class QuantumBloomStudio extends Application {
                 psiImagVal = psi1 * Math.sin(energy1 * time / hbar);
             }
 
-            psiReal[i] = yScale * psiRealVal;
+            psiReal[i] = yScale * psiRealVal;   
             psiImag[i] = yScale * psiImagVal;
             prob[i] = yScale * (psiRealVal * psiRealVal + psiImagVal * psiImagVal);
         }
