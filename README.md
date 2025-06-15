@@ -29,7 +29,7 @@
 - **Auxiliary Plots** — Energy levels, phase space, momentum space, expectation values, and heatmaps
 - **Save/Load State** — Reuse and share quantum scenarios
 - **Educational Dialogs** — Equations and insights explained with visuals
-- **Aesthetic UI** — Sleek violet-magenta gradient theme with soft drop shadows
+- **Aesthetic UI** — Sleek magenta gradient theme with soft drop shadows
 
 ---
 
@@ -115,6 +115,8 @@ After editing the `.bat` files:
 compiler.bat
 run.bat
 ```
+Click on compiler.bat, once compilation successful,
+Click on run.bat
 
 This will compile and launch the **Quantum Bloom Studio** GUI.
 
@@ -139,16 +141,6 @@ QuantumBloomStudio/
 └── README.md
 ```
 
----
-
-## 🧪 Roadmap
-- [ ] Add dark mode toggle
-- [ ] Export wavefunction plots
-- [ ] Include quantum tunneling visualization
-- [ ] Add support for Linux/Mac launch scripts
-- [ ] Add detailed educational popups with LaTeX math
-
----
 
 ## 👩‍💻 Author
 **[Mahi.K]** — [GitHub](https://github.com/Manaswani96)
